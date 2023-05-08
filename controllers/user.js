@@ -6,12 +6,6 @@ var jwt = require('../services/jwt');
 var fs = require('fs');
 var path = require('path');
 
-function pruebas(req, res){
-    res.status(200).send({
-        message: 'Probando una acción el controlador de usuarios del API.Rest con Node.js y MongoDB'
-    })
-}
-
 function saveUser(req, res){
     var user = new User();
     var params = req.body;
@@ -148,7 +142,6 @@ function getImageFile(req, res){
 }
 
 module.exports = {
-    pruebas,
     saveUser,
     loginUser,
     updateUser,
