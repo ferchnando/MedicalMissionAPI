@@ -1,0 +1,37 @@
+{
+  "name": "medicalmissionapi",
+  "version": "1.0.0",
+  "description": "Proyecto de API Rest para Mindo Futures Medical Mission",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \\\"Error: mp test specified\\\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dbustosrc/MedicalMissionAPI.git"
+  },
+  "author": "David Bustos",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dbustosrc/MedicalMissionAPI/issues"
+  },
+  "homepage": "https://github.com/dbustosrc/MedicalMissionAPI#readme",
+  "dependencies": {
+    "bcrypt-nodejs": "^0.0.3",
+    "body-parser": "^1.20.2",
+    "connect-multiparty": "^2.2.0",
+    "dotenv": "^16.0.3",
+    "errorhandler": "^1.5.1",
+    "express": "^4.18.2",
+    "jwt-simple": "^0.5.6",
+    "moment": "^2.29.4",
+    "mongoose": "^7.1.0",
+    "mongoose-pagination": "^1.0.0",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
