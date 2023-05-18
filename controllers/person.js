@@ -6,150 +6,156 @@ var mongoosePagination = require('../node_modules/mongoose-pagination')
 var fs = require('fs');
 var path = require('path');
 
-function getPerson(req, res){
-    var personId = req.params.id;
+async function getPerson(req, res) {
+    try {
+        const personId = req.params.id;
 
-    Person.findById(personId, (err, personFound) => {
-        if(err){
-            res.status(500).send({message: 'Error en la petición'});
-        }else{
-            if(!personFound){
-                res.status(404).send({message: 'Persona no existe'});
-            }else{
-                res.status(200).send({personFound});
-            }
+        const personFound = await Person.findById(personId).exec();
+        if (!personFound) {
+            return res.status(404).send({ message: 'Persona no existe' });
         }
-    });
-}
 
-function getPersons(req, res){
-    if(req.params.page){
-        var page = req.params.page;
-    }else{
-        var page = 1;
-    }
-    var itemsPerPage = 4;
-
-    Person.find().sort('name').paginate(page, itemsPerPage, function(err, persons, totalItems){
-        if(err){
-            res.status(500).send({message: 'Error en la petición'});
-        }else{
-            if(!persons){
-                res.status(404).send({message: 'No existen personas en la base de datos'});
-            }else{
-                return res.status(200).send({
-                    totalItems: totalItems,
-                    persons: persons
-                });
-            }
-        }
-    })
-}
-
-function savePerson(req, res){
-    var person = new Person();
-    var params = req.body;
-
-    person.bracelet = params.bracelet,
-    person.identification = params.identification,
-    person.firstname = params.firstname,
-    person.paternallastname = params.paternallastname,
-    person.maternallastname = params.maternallastname,
-    person.birthdate = params.birthdate,
-    person.maritalstatus = params.maritalstatus,
-    person.phonenumber = params.phonenumber,
-    person.image = null,
-
-    person.save((err, personStored) => {
-        if(err){
-            res.status(500).send({message: 'Error al guardar la persona'});
-        }else{
-            if(!personStored){
-                res.status(404).send({message: 'No se pudo guardar la persona'});
-            }else{
-                res.status(200).send({person: personStored});
-            }
-        }
-    })
-}
-
-function updatePerson(req, res){
-    var personId = req.params.id;
-    var update = req.body;
-
-    Person.findByIdAndUpdate(personId, update, (err, personUpdated) => {
-        if(err){
-            res.status(500).send({message: 'Error al actualizar la persona'});
-        }else{
-            if(!personUpdated){
-                res.status(404).send({message: 'No se ha podido actualizar la persona'});
-            }else{
-                res.status(200).send({personUpdated});
-            }
-        }
-    })
-}
-
-function deletePerson(req, res){
-    var personId = req.params.id;
-    
-    Person.findByIdAndRemove(personId, (err, personRemoved) =>{
-        if(err){
-            res.status(500).send({message: 'Error al eliminar la persona'});
-        }else{
-            //Delete person
-            if(!personRemoved){
-                res.status(404).send({message: 'No se ha podido eliminar la persona'});
-            }else{
-                res.status(200).send({personRemoved});
-            }
-            
-        }
-    });
-}
-
-function uploadImage(req, res){
-    var personId = req.params.id;
-    var filename = 'No subido...';
-
-    if(req.files){
-        var filepath = req.files.image.path;
-        var filename = filepath.split('\\').pop().split('/').pop();
-
-        var filenamesplit = filename.split('\.');
-        var fileext = filenamesplit[1];
-        
-        if(fileext == 'png' || fileext == 'jpg' || fileext == 'gif'){
-            Person.findByIdAndUpdate(personId, {image: filename}, (err, personUpdated) => {
-                if(err){
-                    res.status(500).send({message: 'Error al actualizar la persona'});
-                }else{
-                    if(!personUpdated){
-                        res.status(500).send({message: 'No se ha podido actualizar la persona'});
-                    }else{
-                        res.status(200).send({person: personUpdated});
-                    }
-                }
-            })
-        }else{
-            res.status(200).send({message: 'Extensión del archivo no válida'});
-        }
-    }else{
-        res.status(200).send({message: 'No ha subido ninguna imagen'});
+        return res.status(200).send({ personFound });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send({ message: 'Error en la petición' });
     }
 }
 
-function getImageFile(req, res){
-    var imageFile = req.params.imageFile;
-    var filePath = './uploads/persons/'+imageFile
-    fs.exists(filePath, function(exists){
-        if(exists){
-            res.sendFile(path.resolve(filePath));
-        }else{
-            res.status(200).send({message: 'La imagen no existe'});
+async function getPersons(req, res) {
+    try {
+        const page = req.params.page ? req.params.page : 1;
+        const itemsPerPage = 4;
+
+        const totalItems = await Person.countDocuments();
+
+        const result = await Person.find()
+            .sort('paternallastname')
+            .paginate(page, itemsPerPage)
+            .exec();
+
+        if (!result) {
+            return res.status(404).send({ message: 'No existen personas en la base de datos' });
         }
-    })
+
+        return res.status(200).send({
+            totalItems: totalItems,
+            persons: result
+        });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send({ message: 'Error en la petición' });
+    }
 }
+
+async function savePerson(req, res) {
+    try {
+        const params = req.body;
+
+        const person = new Person({
+            bracelet: params.bracelet,
+            identification: params.identification,
+            firstname: params.firstname,
+            paternallastname: params.paternallastname,
+            maternallastname: params.maternallastname,
+            birthdate: params.birthdate,
+            maritalstatus: params.maritalstatus,
+            phonenumber: params.phonenumber,
+            image: null,
+        });
+
+        const personStored = await person.save();
+        if (!personStored) {
+            return res.status(404).send({ message: 'No se pudo guardar la persona' });
+        }
+
+        return res.status(200).send({ person: personStored });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send({ message: 'Error al guardar la persona' });
+    }
+}
+
+async function updatePerson(req, res) {
+    try {
+        const personId = req.params.id;
+        const update = req.body;
+
+        const personUpdated = await Person.findByIdAndUpdate(personId, update, { new: true });
+
+        if (!personUpdated) {
+            return res.status(404).send({ message: 'No se ha podido actualizar la persona' });
+        }
+
+        return res.status(200).send({ personUpdated });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send({ message: 'Error al actualizar la persona' });
+    }
+}
+
+async function deletePerson(req, res) {
+    try {
+        const personId = req.params.id;
+
+        const personRemoved = await Person.findByIdAndRemove(personId);
+
+        if (!personRemoved) {
+            return res.status(404).send({ message: 'No se ha podido eliminar la persona' });
+        }
+
+        return res.status(200).send({ personRemoved });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send({ message: 'Error al eliminar la persona' });
+    }
+}
+
+async function uploadImage(req, res) {
+    try {
+        const personId = req.params.id;
+        let filename = 'No subido...';
+
+        if (!req.files) {
+            return res.status(200).send({ message: 'No ha subido ninguna imagen' });
+        }
+
+        const filepath = req.files.image.path;
+        filename = filepath.split(/[\\/]/).pop();
+
+        const filenamesplit = filename.split('.');
+        const fileext = filenamesplit[1];
+
+        if (fileext !== 'png' && fileext !== 'jpg' && fileext !== 'gif') {
+            return res.status(200).send({ message: 'Extensión del archivo no válida' });
+        }
+
+        const personUpdated = await Person.findByIdAndUpdate(personId, { image: filename }, { new: true });
+
+        if (!personUpdated) {
+            return res.status(500).send({ message: 'No se ha podido actualizar la persona' });
+        }
+
+        return res.status(200).send({ person: personUpdated });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send({ message: 'Error al actualizar la persona' });
+    }
+}
+
+function getImageFile(req, res) {
+    const imageFile = req.params.imageFile;
+    const filePath = path.resolve('./uploads/persons/', imageFile);
+
+    fs.access(filePath, fs.constants.F_OK, (err) => {
+        if (err) {
+            return res.status(200).send({ message: 'La imagen no existe' });
+        }
+
+        res.sendFile(filePath);
+    });
+}
+
 
 module.exports = {
     getPerson,
