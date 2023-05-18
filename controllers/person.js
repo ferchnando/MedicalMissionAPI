@@ -1,10 +1,10 @@
 'use strict'
 
-var Person = require('../models/person');
+const Person = require('../models/person');
 
-var mongoosePagination = require('../node_modules/mongoose-pagination')
-var fs = require('fs');
-var path = require('path');
+const mongoosePagination = require('../node_modules/mongoose-pagination')
+const fs = require('fs');
+const path = require('path');
 
 async function getPerson(req, res) {
     try {
@@ -155,7 +155,6 @@ function getImageFile(req, res) {
         res.sendFile(filePath);
     });
 }
-
 
 module.exports = {
     getPerson,
