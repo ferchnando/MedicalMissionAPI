@@ -7,6 +7,7 @@ var personSchema = schema({
     bracelet: String,
     identification: String,
     firstname: String,
+    secondname: String,
     paternallastname: String,
     maternallastname: String,
     birthdate: String,

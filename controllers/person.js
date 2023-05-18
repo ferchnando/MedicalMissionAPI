@@ -56,6 +56,7 @@ async function savePerson(req, res) {
             bracelet: params.bracelet,
             identification: params.identification,
             firstname: params.firstname,
+            secondname: params.secondname,
             paternallastname: params.paternallastname,
             maternallastname: params.maternallastname,
             birthdate: params.birthdate,
