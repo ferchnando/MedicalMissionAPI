@@ -24,23 +24,23 @@ async function saveUser(req, res) {
                 user.password = hash;
             });
         } else {
-            return res.status(400).send({ message: 'Ingrese una contraseña' });
+            return res.status(400).send({ error: 'Ingrese una contraseña' });
         }
 
         if (!name || !surname || !email || !phonenumber) {
-            return res.status(400).send({ message: 'Ingrese todos los campos' });
+            return res.status(400).send({ error: 'Ingrese todos los campos' });
         }
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(409).send({ message: 'El correo ya existe' });
+            return res.status(409).send({ error: 'El correo ya existe' });
         }
 
         const result = await user.save();
         res.status(200).send({ user: result });
     } catch (err) {
         console.log(err);
-        res.status(500).send({ message: 'Error al guardar el usuario' });
+        res.status(500).send({ error: err.message });
     }
 }
 
@@ -50,12 +50,12 @@ async function loginUser(req, res) {
 
         const user = await User.findOne({ email: email.toLowerCase() }).exec();
         if (!user) {
-            return res.status(404).send({ message: 'El usuario no existe' });
+            return res.status(500).send({ error: 'El usuario no existe' });
         }
 
         const validPassword = await comparePasswords(password, user.password);
         if (!validPassword) {
-            return res.status(404).send({ message: 'El usuario no ha podido loguearse' });
+            return res.status(500).send({ error: 'El usuario no ha podido loguearse' });
         }
 
         if (gethash) {
@@ -67,7 +67,7 @@ async function loginUser(req, res) {
         return res.status(200).send({ user });
     } catch (err) {
         console.log(err);
-        res.status(500).send({ message: 'Error en la petición' });
+        res.status(500).send({ error: err.message });
     }
 }
 
@@ -89,18 +89,18 @@ async function updateUser(req, res) {
         const update = req.body;
 
         if (userId !== req.user.sub) {
-            return res.status(500).send({ message: 'No se puede actualizar un usuario diferente al actual' });
+            return res.status(500).send({ error: 'No se puede actualizar un usuario diferente al actual' });
         }
 
         const userUpdated = await User.findByIdAndUpdate(userId, update).exec();
         if (!userUpdated) {
-            return res.status(500).send({ message: 'No se ha podido actualizar el usuario' });
+            return res.status(500).send({ error: 'No se ha podido actualizar el usuario' });
         }
 
         return res.status(200).send({ user: userUpdated });
     } catch (err) {
         console.log(err);
-        return res.status(500).send({ message: 'Error al actualizar el usuario' });
+        return res.status(500).send({ error: err.message });
     }
 }
 
@@ -109,7 +109,7 @@ async function uploadImage(req, res) {
       const userId = req.params.id;
   
       if (!req.files) {
-        return res.status(200).send({ message: 'No ha subido ninguna imagen' });
+        return res.status(500).send({ error: 'No ha subido ninguna imagen' });
       }
   
       const imageFile = req.files.image;
@@ -118,18 +118,18 @@ async function uploadImage(req, res) {
       const fileExt = fileName.split('.').pop().toLowerCase();
       
       if (fileExt !== 'png' && fileExt !== 'jpg' && fileExt !== 'gif') {
-        return res.status(200).send({ message: 'Extensión del archivo no válida' });
+        return res.status(500).send({ error: 'Extensión del archivo no válida' });
       }
   
       const userUpdated = await User.findByIdAndUpdate(userId, { image: fileName }).exec();
       if (!userUpdated) {
-        return res.status(500).send({ message: 'No se ha podido actualizar el usuario' });
+        return res.status(500).send({ error: 'No se ha podido actualizar el usuario' });
       }
   
       return res.status(200).send({ image: fileName, user: userUpdated });
     } catch (err) {
       console.log(err);
-      return res.status(500).send({ message: 'Error al actualizar el usuario' });
+      return res.status(500).send({ error: err.message });
     }
   }
 
@@ -142,11 +142,11 @@ async function getImageFile(req, res) {
     if (fileExists) {
       res.sendFile(filePath);
     } else {
-      res.status(200).send({ message: 'La imagen no existe' });
+      res.status(500).send({ error: 'La imagen no existe' });
     }
   } catch (err) {
     console.log(err);
-    res.status(500).send({ message: 'Error al obtener la imagen' });
+    res.status(500).send({ error: err.message });
   }
 }
 

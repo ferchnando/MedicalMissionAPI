@@ -12,13 +12,13 @@ async function getPerson(req, res) {
 
         const personFound = await Person.findById(personId).exec();
         if (!personFound) {
-            return res.status(404).send({ message: 'Persona no existe' });
+            return res.status(500).send({ error: 'Persona no existe' });
         }
 
         return res.status(200).send({ personFound });
     } catch (err) {
         console.log(err);
-        return res.status(500).send({ message: 'Error en la petición' });
+        return res.status(500).send({ error: 'Error en la petición' });
     }
 }
 
@@ -35,7 +35,7 @@ async function getPersons(req, res) {
             .exec();
 
         if (!result) {
-            return res.status(404).send({ message: 'No existen personas en la base de datos' });
+            return res.status(500).send({ error: 'No existen personas en la base de datos' });
         }
 
         return res.status(200).send({
@@ -44,7 +44,7 @@ async function getPersons(req, res) {
         });
     } catch (err) {
         console.log(err);
-        return res.status(500).send({ message: 'Error en la petición' });
+        return res.status(500).send({ error: err.message });
     }
 }
 
@@ -55,7 +55,7 @@ async function savePerson(req, res) {
         const savedPerson = await person.save();
         res.status(200).json(savedPerson);
       } catch (error) {
-        res.status(500).json({ error: 'Error al crear la persona' });
+        res.status(500).json({ error: error.message });
       }
 }
 
@@ -67,13 +67,13 @@ async function updatePerson(req, res) {
         const personUpdated = await Person.findByIdAndUpdate(personId, update, { new: true });
 
         if (!personUpdated) {
-            return res.status(404).send({ message: 'No se ha podido actualizar la persona' });
+            return res.status(500).send({ error: 'No se ha podido actualizar la persona' });
         }
 
         return res.status(200).send({ personUpdated });
     } catch (err) {
         console.log(err);
-        return res.status(500).send({ message: 'Error al actualizar la persona' });
+        return res.status(500).send({ error: err.message });
     }
 }
 
@@ -84,13 +84,13 @@ async function deletePerson(req, res) {
         const personRemoved = await Person.findByIdAndRemove(personId);
 
         if (!personRemoved) {
-            return res.status(404).send({ message: 'No se ha podido eliminar la persona' });
+            return res.status(500).send({ error: 'No se ha podido eliminar la persona' });
         }
 
         return res.status(200).send({ personRemoved });
     } catch (err) {
         console.log(err);
-        return res.status(500).send({ message: 'Error al eliminar la persona' });
+        return res.status(500).send({ error: err.message });
     }
 }
 
@@ -100,7 +100,7 @@ async function uploadImage(req, res) {
         let filename = 'No subido...';
 
         if (!req.files) {
-            return res.status(200).send({ message: 'No ha subido ninguna imagen' });
+            return res.status(500).send({ error: 'No ha subido ninguna imagen' });
         }
 
         const filepath = req.files.image.path;
@@ -110,19 +110,19 @@ async function uploadImage(req, res) {
         const fileext = filenamesplit[1];
 
         if (fileext !== 'png' && fileext !== 'jpg' && fileext !== 'gif') {
-            return res.status(200).send({ message: 'Extensión del archivo no válida' });
+            return res.status(500).send({ error: 'Extensión del archivo no válida' });
         }
 
         const personUpdated = await Person.findByIdAndUpdate(personId, { image: filename }, { new: true });
 
         if (!personUpdated) {
-            return res.status(500).send({ message: 'No se ha podido actualizar la persona' });
+            return res.status(500).send({ error: 'No se ha podido actualizar la persona' });
         }
 
         return res.status(200).send({ person: personUpdated });
     } catch (err) {
         console.log(err);
-        return res.status(500).send({ message: 'Error al actualizar la persona' });
+        return res.status(500).send({ error: err.message });
     }
 }
 
@@ -132,7 +132,7 @@ function getImageFile(req, res) {
 
     fs.access(filePath, fs.constants.F_OK, (err) => {
         if (err) {
-            return res.status(200).send({ message: 'La imagen no existe' });
+            return res.status(500).send({ error: 'La imagen no existe' });
         }
 
         res.sendFile(filePath);
