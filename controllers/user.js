@@ -39,7 +39,6 @@ async function saveUser(req, res) {
         const result = await user.save();
         res.status(200).send({ user: result });
     } catch (err) {
-        console.log(err);
         res.status(500).send({ error: err.message });
     }
 }

@@ -7,8 +7,7 @@ class AddressController {
       const address = await Address.create(addressData);
       res.status(201).json(address);
     } catch (error) {
-      console.error('Error al crear la dirección:', error);
-      res.status(500).json({ error: 'Error al crear la dirección' });
+      res.status(500).json({ error: error.message });
     }
   }
 
@@ -22,8 +21,7 @@ class AddressController {
       }
       res.json(address);
     } catch (error) {
-      console.error('Error al actualizar la dirección:', error);
-      res.status(500).json({ error: 'Error al actualizar la dirección' });
+      res.status(500).json({ error: error.message });
     }
   }
 
@@ -36,8 +34,7 @@ class AddressController {
       }
       res.json(address);
     } catch (error) {
-      console.error('Error al eliminar la dirección:', error);
-      res.status(500).json({ error: 'Error al eliminar la dirección' });
+      res.status(500).json({ error: error.message });
     }
   }
 
@@ -50,8 +47,7 @@ class AddressController {
       }
       res.json(address);
     } catch (error) {
-      console.error('Error al obtener la dirección:', error);
-      res.status(500).json({ error: 'Error al obtener la dirección' });
+      res.status(500).json({ error: error.message });
     }
   }
 
@@ -60,8 +56,7 @@ class AddressController {
       const addresses = await Address.find();
       res.json(addresses);
     } catch (error) {
-      console.error('Error al obtener las direcciones:', error);
-      res.status(500).json({ error: 'Error al obtener las direcciones' });
+      res.status(500).json({ error: error.message });
     }
   }
 }

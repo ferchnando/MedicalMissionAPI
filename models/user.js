@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const common = require('../services/common');
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
@@ -32,5 +33,16 @@ const userSchema = new Schema({
         type: String
     }
 });
+
+userSchema.pre('save', async function (next) {
+    try {
+        this.name = await common.capitalLetters(this.name);
+        this.surname = await common.capitalLetters(this.surname);
+        this.email = await common.lowerCaseLetters(this.email);
+        next();
+    } catch (error) {
+        next(error);
+    }
+  });
 
 module.exports = mongoose.model('User', userSchema);
