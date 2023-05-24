@@ -1,9 +1,7 @@
-'use strict'
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-var mongoose = require('../node_modules/mongoose');
-var schema = mongoose.Schema;
-
-var userSchema = schema({
+const userSchema = new Schema({
     name: {
         type: String,
         required: true

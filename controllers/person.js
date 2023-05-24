@@ -50,31 +50,13 @@ async function getPersons(req, res) {
 
 async function savePerson(req, res) {
     try {
-        const params = req.body;
-
-        const person = new Person({
-            bracelet: params.bracelet,
-            identification: params.identification,
-            firstname: params.firstname,
-            secondname: params.secondname,
-            paternallastname: params.paternallastname,
-            maternallastname: params.maternallastname,
-            birthdate: params.birthdate,
-            maritalstatus: params.maritalstatus,
-            phonenumber: params.phonenumber,
-            image: null,
-        });
-
-        const personStored = await person.save();
-        if (!personStored) {
-            return res.status(404).send({ message: 'No se pudo guardar la persona' });
-        }
-
-        return res.status(200).send({ person: personStored });
-    } catch (err) {
-        console.log(err);
-        return res.status(500).send({ message: 'Error al guardar la persona' });
-    }
+        const personData = req.body;
+        const person = new Person(personData);
+        const savedPerson = await person.save();
+        res.status(200).json(savedPerson);
+      } catch (error) {
+        res.status(500).json({ error: 'Error al crear la persona' });
+      }
 }
 
 async function updatePerson(req, res) {
