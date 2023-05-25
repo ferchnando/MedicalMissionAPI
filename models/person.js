@@ -10,7 +10,9 @@ const personSchema = new Schema({
     },
     idCardNumber: {             //Número de carné
         type: String,
-        unique: true
+        unique: true,
+        required: true,
+        default: 0
     },
     identification: {           //Número de indentificación
         type: String,

@@ -8,7 +8,7 @@ class RegionController {
       const savedRegion = await region.save();
       res.status(201).json(savedRegion);
     } catch (error) {
-      res.status(500).json({ error: 'Error al crear la región' });
+      res.status(500).json({ error: error.message });
     }
   }
 
