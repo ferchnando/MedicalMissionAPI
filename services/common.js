@@ -1,28 +1,43 @@
 const Address = require('../models/address');
 const Region = require('../models/region');
 
-exports.getNewPersonIdNumber = function getNewPersonIdNumber(newPersonId, personAddress) {
-    //const address = Address.findById(personAddress._id);
-    //console.log(address);
-    /*try {
-        const docs = Address.find({ personAddress }).populate('_id');
-        console.log("Result:", docs);
-      } catch (err) {
-        console.log(err);
-      }*/
-    /*console.log(personAddress._id);
+exports.getNewPersonIdNumber = async function getNewPersonIdNumber(newPersonId, personAddress) {
+    const address = await getAdress(personAddress);
     if (!address) {
-        return '';
+        return "";
     }
-    const region = Region.findById(address.region._id);
-    console.log(address._id);
+    
+    const region = await getRegion(address.region);
     if (!region) {
-        return '';
+        return "";
     }
-    console.log(region.idNumber);*/
-    return /*region.idNumber +*/ newPersonId.toString().padStart(5, '0');
-    //return '';
+    
+    return region.idNumber + newPersonId.toString().padStart(6, '0');
 };
+
+function getRegion(regionId) {
+    return new Promise((resolve, reject) => {
+        Region.findById(regionId)
+            .then(result => {
+                resolve(result);
+            })
+            .catch(err => {
+                reject(err);
+            });
+    });
+}
+
+function getAdress(addressId) {
+    return new Promise((resolve, reject) => {
+        Address.findById(addressId)
+            .then(result => {
+                resolve(result);
+            })
+            .catch(err => {
+                reject(err);
+            });
+    });
+}
 
 exports.capitalLetters = function capitalLetters(str) {
     const arr = str.split(" ");

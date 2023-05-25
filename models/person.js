@@ -40,6 +40,7 @@ const personSchema = new Schema({
         enum: ['STATUS_SINGLE',         //Soltero
             'STATUS_MARRIED',           //Casado
             'STATUS_DIVORCIED',         //Divorciado
+            'STATUS_WIDOWED',           //Viudo
             'STATUS_NON-MARITAL-UNION', //Unión de hecho
         ]
     },
@@ -68,15 +69,28 @@ personSchema.index({ identification: 1 }, { unique: true });
 
 personSchema.pre('save', async function (next) {
     try {
-        //this.name = await common.capitalLetters(this.name);
-        //this.firstname = await common.capitalLetters(this.firstname);
-        //this.secondname = await common.capitalLetters(this.secondname);
-        //this.paternallastname = await common.capitalLetters(this.paternallastname);
-        //this.maternalLastname = await common.capitalLetters(this.maternalLastname);
+        this.firstname = await common.capitalLetters(this.firstname);
+        this.secondname = await common.capitalLetters(this.secondname);
+        this.paternallastname = await common.capitalLetters(this.paternallastname);
+        this.maternalLastname = await common.capitalLetters(this.maternalLastname);
         
         const lastPerson = await mongoose.models['Person'].find().sort({ idNumber: -1 }).limit(1).exec();
         this.idNumber = lastPerson.length ? lastPerson[0].idNumber + 1 : 1;
         this.idCardNumber = await common.getNewPersonIdNumber(this.idNumber, this.address);
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
+
+personSchema.pre('findOneAndUpdate', async function (next) {
+    try {
+        const update = this.getUpdate();
+        update.firstname = await common.capitalLetters(update.firstname);
+        update.secondname = await common.capitalLetters(update.secondname);
+        update.paternallastname = await common.capitalLetters(update.paternallastname);
+        update.maternalLastname = await common.capitalLetters(update.maternalLastname);
+        
         next();
     } catch (error) {
         next(error);
