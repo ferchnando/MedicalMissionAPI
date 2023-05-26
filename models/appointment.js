@@ -19,8 +19,7 @@ const appointmentSchema = new Schema({
         required: true
     },
     number: {
-        type: Number,
-        required: true
+        type: Number
     },
     attentionDate: {
         type: Date,
@@ -48,7 +47,7 @@ const appointmentSchema = new Schema({
     }
 });
 
-appointmentSchema.index({ period: 1, medicalSpecialization: 1 }, { unique: true });
+appointmentSchema.index({ period: 1, medicalSpecialization: 1, person: 1 }, { unique: true });
 
 appointmentSchema.pre('save', async function (next) {
     try {
@@ -69,6 +68,7 @@ appointmentSchema.pre('save', async function (next) {
 
         const lastAppointment = await mongoose.models['Appointment'].find({ period: this.period }).sort({ number: -1 }).limit(1).exec();
         this.number = lastAppointment.length ? lastAppointment[0].number + 1 : 1;
+        console.log(this.number);
         next();
     } catch (error) {
         next(error);

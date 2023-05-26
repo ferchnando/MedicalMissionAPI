@@ -9,7 +9,7 @@ class AppointmentController {
       const savedAppointment = await appointment.save();
       res.status(200).json(savedAppointment);
     } catch (error) {
-      res.status(500).json({ error: 'Error al crear la cita' });
+      res.status(500).json({ error: error.message });
     }
   }
 
