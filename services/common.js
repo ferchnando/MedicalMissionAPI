@@ -7,8 +7,7 @@ exports.getNewPersonIdNumber = async function getNewPersonIdNumber(personAddress
     try {
         const address = await getAdress(personAddress);
         if (!address) {
-            console.log("No existe dirección :" + personAddress)
-            return { idNumber: "", idCardNumber: "" };
+            throw new Error('No existe dirección :' + personAddress);
         }
 
         const region = await getRegion(address.region);

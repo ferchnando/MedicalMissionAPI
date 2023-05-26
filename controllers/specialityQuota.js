@@ -3,28 +3,24 @@ const SpecialityQuota = require('../models/specialityQuota');
 class SpecialityQuotaController {
     async createSpecialityQuota(req, res) {
         try {
-            const { period, medicalSpecialization, maxQuota } = req.body;
+            const id = req.body;
 
-            const specialityQuota = await SpecialityQuota.create({
-                period,
-                medicalSpecialization,
-                maxQuota,
-            });
+            const specialityQuota = await SpecialityQuota.create(id);
 
             res.status(201).json(specialityQuota);
         } catch (error) {
-            res.status(500).json({ error: 'Error al crear la cuota de especialidad' });
+            res.status(500).json({ error: error.message });
         }
     }
 
     async updateSpecialityQuota(req, res) {
         try {
             const { id } = req.params;
-            const { period, medicalSpecialization, maxQuota } = req.body;
+            const { period, medicalSpecialization, attentionDate, maxQuota } = req.body;
 
             const specialityQuota = await SpecialityQuota.findByIdAndUpdate(
                 id,
-                { period, medicalSpecialization, maxQuota },
+                { period, medicalSpecialization, attentionDate, maxQuota },
                 { new: true }
             );
 
