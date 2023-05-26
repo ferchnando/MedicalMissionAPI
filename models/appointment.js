@@ -29,9 +29,17 @@ const appointmentSchema = new Schema({
             'STATUS_NOT-ATTENDED',      //Sin atenderse
         ]
     },
-    lastUpdate: {
-        type: Date,
-        required: true
+    onHoldUpdate: {
+        type: Date
+    },
+    archivedUpdate: {
+        type: Date
+    },
+    attendedUpdate: {
+        type: Date
+    },
+    notAttendedUpdate: {
+        type: Date
     }
 });
 

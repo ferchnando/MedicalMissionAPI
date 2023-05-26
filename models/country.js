@@ -28,4 +28,14 @@ countrySchema.pre('save', async function (next) {
   }
 });
 
+countrySchema.pre('findOneAndUpdate', async function (next) {
+  try {
+    const update = this.getUpdate();
+    update.name = await common.capitalLetters(update.name);
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = mongoose.model('Country', countrySchema);

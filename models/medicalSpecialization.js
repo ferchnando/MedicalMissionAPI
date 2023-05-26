@@ -21,4 +21,14 @@ medicalSpecializationSchema.pre('save', async function (next) {
     }
 });
 
+medicalSpecializationSchema.pre('findOneAndUpdate', async function (next) {
+    try {
+        const update = this.getUpdate();
+        update.name = await common.capitalLetters(update.name);
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
+
 module.exports = mongoose.model('MedicalSpecialization', medicalSpecializationSchema);

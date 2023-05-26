@@ -43,6 +43,19 @@ userSchema.pre('save', async function (next) {
     } catch (error) {
         next(error);
     }
-  });
+});
+
+userSchema.pre('findOneAndUpdate', async function (next) {
+    try {
+        const update = this.getUpdate();
+        update.name = await common.capitalLetters(update.name);
+        update.surname = await common.capitalLetters(update.surname);
+        update.email = await common.lowerCaseLetters(update.email);
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
+
 
 module.exports = mongoose.model('User', userSchema);
