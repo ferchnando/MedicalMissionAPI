@@ -5,7 +5,6 @@ const { Schema } = mongoose;
 const personSchema = new Schema({
     idNumber: {                 //ID
         type: Number,
-        unique: true,
         default: 0
     },
     idCardNumber: {             //Número de carné
@@ -67,7 +66,7 @@ const personSchema = new Schema({
     image: String               //imagen
 });
 
-personSchema.index({ identification: 1 }, { unique: true });
+personSchema.index({ idCardNumber: 1 }, { unique: true });
 
 personSchema.pre('save', async function (next) {
     try {
@@ -75,10 +74,9 @@ personSchema.pre('save', async function (next) {
         this.secondname = await common.capitalLetters(this.secondname);
         this.paternallastname = await common.capitalLetters(this.paternallastname);
         this.maternalLastname = await common.capitalLetters(this.maternalLastname);
-        
-        const lastPerson = await mongoose.models['Person'].find().sort({ idNumber: -1 }).limit(1).exec();
-        this.idNumber = lastPerson.length ? lastPerson[0].idNumber + 1 : 1;
-        this.idCardNumber = await common.getNewPersonIdNumber(this.idNumber, this.address);
+        const result = await common.getNewPersonIdNumber(this.address);
+        this.idNumber = result.idNumber;
+        this.idCardNumber = result.idCardNumber;
         next();
     } catch (error) {
         next(error);

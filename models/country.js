@@ -3,21 +3,28 @@ const common = require('../services/common');
 const { Schema } = mongoose;
 
 const countrySchema = new Schema({
-    name: {
-        type: String,
-        required: true,
-        unique: true
-      },
+  idNumber: {
+    type: Number,
+    default: 0
+  },
+  name: {
+    type: String,
+    required: true,
+    unique: true
+  },
 });
 
 countrySchema.index({ name: 1 }, { unique: true });
 
 countrySchema.pre('save', async function (next) {
   try {
-      this.name = await common.capitalLetters(this.name);
-      next();
+    this.name = await common.capitalLetters(this.name);
+
+    const lastCountry = await mongoose.models['Country'].find().sort({ idNumber: -1 }).limit(1).exec();
+    this.idNumber = lastCountry.length ? lastCountry[0].idNumber + 1 : 1;
+    next();
   } catch (error) {
-      next(error);
+    next(error);
   }
 });
 
