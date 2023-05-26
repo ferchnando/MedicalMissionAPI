@@ -30,7 +30,7 @@ specialityQuotaSchema.path('attentionDate').validate(async function (value) {
     try {
         const period = await Period.findById(this.period);
         if (!period) {
-            throw new Error('No se encontró el periodo correspondiente');
+            throw new Error('The corresponding period was not found: ' + this.period);
         }
         // Verifica si la fecha está dentro del rango permitido
         return value >= period.startDate && value <= period.endDate;
@@ -39,6 +39,6 @@ specialityQuotaSchema.path('attentionDate').validate(async function (value) {
         console.log(error.message);
         return false;
     }
-}, 'La fecha debe estar dentro del rango del periodo.');
+}, 'The date must be within the range of the period.');
 
 module.exports = mongoose.model('SpecialityQuota', specialityQuotaSchema);
