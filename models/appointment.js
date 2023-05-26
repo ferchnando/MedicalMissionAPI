@@ -45,4 +45,4 @@ const appointmentSchema = new Schema({
 
 appointmentSchema.index({ period: 1, medicalSpecialization: 1 }, { unique: true });
 
-module.exports = mongoose.model('SpecialityQuota', appointmentSchema);
+module.exports = mongoose.model('Appointment', appointmentSchema);

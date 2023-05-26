@@ -21,6 +21,6 @@ const periodSchema = new Schema({
     },
 });
 
-regionSchema.index({ name: 1, year: 1, startDate: 1, endDate: 1 }, { unique: true });
+periodSchema.index({ name: 1, year: 1, startDate: 1, endDate: 1 }, { unique: true });
 
 module.exports = mongoose.model('Period', periodSchema);
