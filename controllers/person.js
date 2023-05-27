@@ -1,6 +1,9 @@
 'use strict'
 
 const Person = require('../models/person');
+const Address = require('../models/address');
+const Region = require('../models/region');
+const Country = require('../models/country');
 
 const mongoosePagination = require('../node_modules/mongoose-pagination')
 const fs = require('fs');
@@ -19,6 +22,53 @@ async function getPerson(req, res) {
     } catch (err) {
         console.log(err);
         return res.status(500).send({ error: 'Error en la petición' });
+    }
+}
+
+async function getPersonIdCards(req, res) {
+    try {
+        const result = await Person.find()
+            .sort('idCardNumber')
+            .populate({
+                path: 'address',
+                populate: {
+                    path: 'region',
+                    populate: {
+                        path: 'country'
+                    }
+                }
+            })
+            .exec();
+            
+        const formattedResult = result.map(person => {
+            const {
+              idCardNumber,
+              firstname,
+              secondname,
+              paternallastname,
+              maternalLastname,
+              birthdate
+            } = person;
+            const districtName = person.address.district;
+            const cityName = person.address.city;
+            const regionName = person.address.region.name;
+            const countryName = person.address.region.country.name;
+            return {
+              idCardNumber,
+              firstname,
+              secondname,
+              paternallastname,
+              maternalLastname,
+              birthdate,
+              districtName,
+              cityName,
+              regionName,
+              countryName
+            };
+          });
+        res.json(formattedResult);
+    } catch (error) {
+        res.status(500).json({ error: 'Error retrieving idCards', error });
     }
 }
 
@@ -54,9 +104,9 @@ async function savePerson(req, res) {
         const person = new Person(personData);
         const savedPerson = await person.save();
         res.status(200).json(savedPerson);
-      } catch (error) {
+    } catch (error) {
         res.status(500).json({ error: error.message });
-      }
+    }
 }
 
 async function updatePerson(req, res) {
@@ -141,6 +191,7 @@ function getImageFile(req, res) {
 
 module.exports = {
     getPerson,
+    getPersonIdCards,
     savePerson,
     getPersons,
     updatePerson,
