@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+const common = require('../services/common');
 const currentDate = new Date();
 
 const appointmentSchema = new Schema({
@@ -33,6 +34,9 @@ const appointmentSchema = new Schema({
             'STATUS_NOT-ATTENDED',      //Sin atenderse
         ]
     },
+    observation: {
+        type: String
+    },
     onHoldUpdate: {
         type: Date
     },
@@ -65,7 +69,7 @@ appointmentSchema.pre('save', async function (next) {
                 this.notAttendedUpdate = currentDate;
                 break;
         }
-
+        this.observation = await common.lowerCaseLetters(this.observation);
         const lastAppointment = await mongoose.models['Appointment'].find({ period: this.period }).sort({ number: -1 }).limit(1).exec();
         this.number = lastAppointment.length ? lastAppointment[0].number + 1 : 1;
         console.log(this.number);
@@ -92,7 +96,7 @@ appointmentSchema.pre('findOneAndUpdate', async function (next) {
                 update.notAttendedUpdate = currentDate;
                 break;
         }
-
+        update.observation = await common.lowerCaseLetters(update.observation);
         next();
     } catch (error) {
         next(error);
