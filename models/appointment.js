@@ -32,7 +32,8 @@ const appointmentSchema = new Schema({
             'STATUS_ARCHIVED',          //Archivado
             'STATUS_ATTENDED',          //Atendido
             'STATUS_NOT-ATTENDED',      //Sin atenderse
-        ]
+        ],
+        default: 'STATUS_ON-HOLD'
     },
     observation: {
         type: String

@@ -21,4 +21,7 @@ router.get('/regions/:id', md_auth.ensureAuth, regionController.getRegion);
 // Ruta para obtener todas las regiones
 router.get('/regions', md_auth.ensureAuth, regionController.getRegions);
 
+// Ruta para obtener todas las regiones por CountryId
+router.get('/regions/country/:id', md_auth.ensureAuth, regionController.getRegionsByCountryId);
+
 module.exports = router;

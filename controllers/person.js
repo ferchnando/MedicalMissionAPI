@@ -102,6 +102,7 @@ async function getPersons(req, res) {
 
 async function savePerson(req, res) {
     try {
+        console.log(req.body);
         const personData = req.body;
         const person = new Person(personData);
         const savedPerson = await person.save();
