@@ -19,7 +19,7 @@ const regionSchema = new Schema({
   }
 });
 
-regionSchema.index({ idNumber: 1, country: 1 }, { unique: true });
+regionSchema.index({ name: 1, country: 1 }, { unique: true });
 
 regionSchema.pre('save', async function (next) {
   try {

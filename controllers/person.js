@@ -28,7 +28,7 @@ async function getPerson(req, res) {
 async function getPersonIdCards(req, res) {
     try {
         const result = await Person.find()
-            .sort('idCardNumber')
+            .sort('creationDate')
             .populate({
                 path: 'address',
                 populate: {
@@ -42,6 +42,7 @@ async function getPersonIdCards(req, res) {
             
         const formattedResult = result.map(person => {
             const {
+                identification,
               idCardNumber,
               firstname,
               secondname,
@@ -54,6 +55,7 @@ async function getPersonIdCards(req, res) {
             const regionName = person.address.region.name;
             const countryName = person.address.region.country.name;
             return {
+                identification,
               idCardNumber,
               firstname,
               secondname,

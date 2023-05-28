@@ -63,6 +63,10 @@ const personSchema = new Schema({
         type: Schema.ObjectId,
         ref: 'Relationship'
     },
+    creationDate: {
+        type: Date,
+        default: Date.now
+    },
     image: String               //imagen
 });
 
@@ -90,7 +94,7 @@ personSchema.pre('findOneAndUpdate', async function (next) {
         update.secondname = await common.capitalLetters(update.secondname);
         update.paternallastname = await common.capitalLetters(update.paternallastname);
         update.maternalLastname = await common.capitalLetters(update.maternalLastname);
-        
+
         next();
     } catch (error) {
         next(error);
