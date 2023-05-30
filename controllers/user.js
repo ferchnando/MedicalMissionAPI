@@ -57,7 +57,7 @@ async function loginUser(req, res) {
             return res.status(500).send({ error: 'El usuario no ha podido loguearse' });
         }
 
-        if (gethash) {
+       if (gethash) {
             const token = jwt.createToken(user);
             console.log(token);
             return res.status(200).send({ token });
