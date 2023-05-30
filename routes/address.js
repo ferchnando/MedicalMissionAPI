@@ -20,4 +20,7 @@ router.get('/addresses/:id', md_auth.ensureAuth, addressController.getAddress);
 // Ruta para obtener todas las direcciones
 router.get('/addresses', md_auth.ensureAuth, addressController.getAddresses);
 
+// Ruta para obtener todas las direcciones
+router.post('/addresses/getAddressesByParams', md_auth.ensureAuth, addressController.getAddressesByParams);
+
 module.exports = router;

@@ -8,6 +8,7 @@ var md_updload = multipart({ uploadDir: './uploads/persons/' });
 var api = express.Router();
 
 api.get('/person/:id', md_auth.ensureAuth, personController.getPerson);
+api.get('/person/idCardNumbers/:id?', personController.getPersonIdCards);
 api.post('/person', md_auth.ensureAuth, personController.savePerson);
 api.get('/persons/:page?', md_auth.ensureAuth, personController.getPersons);
 api.put('/person/:id', md_auth.ensureAuth, personController.updatePerson);

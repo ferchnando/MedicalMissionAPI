@@ -76,7 +76,7 @@ class EducationalLevelController {
     try {
       const educationalLevels = await EducationalLevel.find();
       
-      res.status(200).json({ educationalLevels });
+      res.status(200).json( educationalLevels );
     } catch (error) {
       res.status(500).json({ message: 'Error al obtener los niveles educativos', error });
     }

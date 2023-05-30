@@ -60,6 +60,15 @@ class RegionController {
       res.status(500).json({ error: 'Error al obtener las regiones' });
     }
   }
+
+  async getRegionsByCountryId(req, res) {
+    try {
+      const regions = await Region.find({ country: { $in: req.params.id } });
+      res.json(regions);
+    } catch (error) {
+      res.status(500).json({ error: 'Error al obtener las regiones' });
+    }
+  }
 }
 
 module.exports = RegionController;
