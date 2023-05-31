@@ -1,7 +1,7 @@
 FROM node:18
 
 # Create app directory
-WORKDIR /home/mindo/MindoFutures/MedicalMissionAPI/
+WORKDIR $HOME/MindoFutures/MedicalMissionAPI/
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
